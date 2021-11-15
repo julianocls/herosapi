@@ -10,7 +10,7 @@ public class HerosapiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HerosapiApplication.class, args);
-		System.out.println("Powerfull with Spring WebFlux!");
+		System.out.println("All the power of Spring WebFlux!");
 	}
 
 }
