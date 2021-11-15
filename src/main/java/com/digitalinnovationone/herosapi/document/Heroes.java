@@ -1,41 +1,22 @@
 package com.digitalinnovationone.herosapi.document;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import org.springframework.data.annotation.Id;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.json.Id;
 
 @Data
 @NoArgsConstructor
-@DynamoDBTable(tableName = "Heroes_Table")
+@DynamoDBTable(tableName ="Heroes_Api_Table")
 public class Heroes {
-
-    @Id
-    @DynamoDBHashKey(attributeName = "id")
-    private Long id;
-
-    @DynamoDBHashKey(attributeName = "name")
-    private String name;
-
-    @DynamoDBHashKey(attributeName = "universe")
-    private String universe;
-
-    @DynamoDBHashKey(attributeName = "films")
-    private int films;
-
-    public Heroes(Long id, String name, String universe, int films) {
-        this.id = id;
-        this.name = name;
-        this.universe = universe;
-        this.films = films;
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -62,4 +43,25 @@ public class Heroes {
     public void setFilms(int films) {
         this.films = films;
     }
+
+    @Id
+    @DynamoDBHashKey (attributeName = "id")
+    private String id;
+
+    @DynamoDBAttribute (attributeName = "name")
+    private String name;
+
+    @DynamoDBAttribute (attributeName = "universe")
+    private String universe;
+
+    @DynamoDBAttribute (attributeName = "films")
+    private int films;
+
+    public Heroes(String id, String name, String universe, int films) {
+        this.id = id;
+        this.name = name;
+        this.universe = universe;
+        this.films = films;
+    }
+
 }

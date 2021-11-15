@@ -13,7 +13,8 @@ import java.util.Arrays;
 
 public class HeroesTable {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(HeroesConstant.ENDPOINT_DYNAMO, HeroesConstant.REGION_DYNAMO))
                 .build();
@@ -21,15 +22,27 @@ public class HeroesTable {
         DynamoDB dynamoDB = new DynamoDB(client);
 
         String tableName = "Heroes_Table";
+
         try {
-            Table table = dynamoDB.createTable(
-                    tableName,
-                    Arrays.asList(new KeySchemaElement("id", KeyType.HASH)),
-                    Arrays.asList(new AttributeDefinition("id", ScalarAttributeType.S)),
-                    new ProvisionedThroughput(5L, 5L));
+            System.out.println("Criando tabela, aguarde...");
+            Table table = dynamoDB.createTable(tableName,
+                    Arrays.asList(new KeySchemaElement("id", KeyType.HASH)
+                    ),
+
+                    Arrays.asList(new AttributeDefinition("id", ScalarAttributeType.S)
+                    ),
+
+                    new ProvisionedThroughput(5L, 5L)
+            );
             table.waitForActive();
+            System.out.println("Successo " + table.getDescription().getTableStatus());
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Não foi possível criar a tabela");
+            System.err.println(e.getMessage());
         }
+
     }
+
 }
+

@@ -10,16 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import software.amazon.awssdk.core.Response;
 
 @RestController
 @Slf4j
-public class HeroesController {
 
+public class HeroesController {
     HeroesService heroesService;
+
     HeroesRepository heroesRepository;
 
-    private static final org.slf4j.Logger logs = org.slf4j.LoggerFactory.getLogger(HeroesController.class);
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HeroesController.class);
 
     public HeroesController(HeroesService heroesService, HeroesRepository heroesRepository) {
         this.heroesService = heroesService;
@@ -27,32 +28,35 @@ public class HeroesController {
     }
 
     @GetMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL)
-    public Flux<Heroes> getAllItems(){
-        logs.info("Requisitando uma lista com todos os heroes.");
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<Heroes> getAllItems() {
+        log.info("Obtendo uma lista com todos os hero's");
         return heroesService.findAll();
+
     }
 
-    @GetMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL+"/id")
-    public Mono<ResponseEntity<Heroes>> findByIdHeroes(@PathVariable Long id) {
-        logs.info("Requisitando o heroe id {}.", id);
-        return heroesService.findByIdHeroes(id)
+
+    @GetMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL + "/{id}")
+    public Mono<ResponseEntity<Heroes>> findByIdHero(@PathVariable String id) {
+        log.info("Obtendo hero com id {}", id);
+        return heroesService.findByIdHero(id)
                 .map((item) -> new ResponseEntity<>(item, HttpStatus.OK))
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL)
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Heroes> createHero(@RequestBody Heroes heroes) {
-        logs.info("Um novo heroe foi criado");
+        log.info("Um novo hero foi criado");
         return heroesService.save(heroes);
+
     }
 
-    @GetMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL+"/id")
+    @DeleteMapping(HeroesConstant.HEROES_ENDPOINT_LOCAL + "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<HttpStatus> deleteByIdHero(@PathVariable Long id) {
-        heroesService.deleteByIdHeroes(id);
-        logs.info("Deletando um hero com o id {}.", id);
+    public Mono<HttpStatus> deletebyIDHero(@PathVariable String id) {
+        heroesService.deletebyIDHero(id);
+        log.info("Apagando hero com id {}", id);
         return Mono.just(HttpStatus.NO_CONTENT);
     }
-
 }
